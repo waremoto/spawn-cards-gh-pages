@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<script>
+  var f = () => { };
+  var c = {};
+  Object.keys(console).forEach(x => {
+    if (typeof (console[x]) === 'function') {
+      c[x] = f;
+    }
+  });
+  var orgConsole = console;
+  window.orgConsole = orgConsole;
+  var console = c;
+  window.console = console;
+</script>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Spawn</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      background: black;
+    }
+
+    #unity-canvas {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+    }
+
+    #unity-loading-bar {
+      position: absolute;
+      left: 30%;
+      top: 50%;
+      width: 40%;
+      height: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    #unity-progress-bar {
+      position: absolute;
+      left: 0%;
+      top: 0%;
+      width: 1%;
+      height: 100%;
+      background-color: #ccc;
+      border-radius: 10px;
+      transition: 400ms linear;
+    }
+
+    .box {
+      width: 700px;
+      height: 300px;
+    }
+
+    .box1,
+    .box2,
+    .box3 {
+      position: absolute;
+      animation: anime 5s ease-in-out infinite;
+    }
+
+    @keyframes anime {
+      0% {
+        transform: translateX(0px) translateY(0px) rotate(0deg);
+        border-radius: 30px;
+      }
+
+      20% {
+        transform: translateX(100px) translateY(200px) rotate(360deg);
+        border-radius: 50%;
+      }
+
+      40% {
+        transform: translateX(250px) translateY(0px) rotate(720deg);
+        border-radius: 30px
+      }
+
+      60% {
+        transform: translateX(400px) translateY(200px) rotate(1080deg);
+        border-radius: 50%;
+      }
+
+      80% {
+        transform: translateX(550px) translateY(0px) rotate(1440deg);
+        border-radius: 30px
+      }
+    }
+
+    .box1 {
+      width: 100px;
+      height: 100px;
+      border-radius: 30px;
+      background-color: springgreen;
+      animation-delay: 0.1s;
+      box-shadow: 0 0 30px 10px springgreen,
+        0 0 60px 20px springgreen,
+        inset 0 50px 80px yellow;
+    }
+
+    .box2 {
+      width: 100px;
+      height: 100px;
+      border-radius: 30px;
+      background-color: deepskyblue;
+      animation-delay: 0.5s;
+      box-shadow: 0 0 30px 10px deepskyblue,
+        0 0 60px 20px deepskyblue,
+        inset 0 50px 80px white;
+    }
+
+    .box3 {
+      width: 100px;
+      height: 100px;
+      border-radius: 30px;
+      background-color: deeppink;
+      animation-delay: 1s;
+      box-shadow: 0 0 30px 10px deeppink,
+        0 0 60px 20px deeppink,
+        inset 0 50px 80px orange;
+    }
+
+    .content {
+      opacity: 0;
+      display: none;
+      transition: all .5s ease-in-out;
+    }
+
+    .content.show {
+      opacity: 1;
+    }
+
+    #loading-cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      opacity: 1;
+      display: flex;
+      transition: all .5s ease-in-out;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="unity-canvas"></canvas>
+  <div class="content">
+    <div id="loading-cover">
+      <div class="box">
+        <div class="box1"></div>
+        <div class="box2"></div>
+        <div class="box3"></div>
+      </div>
+    </div>
+  </div>
+  <script src="Build/spawn-webgl.loader.js"></script>
+  <script>
+
+    animateDisplay = function (target, animationClass, displayType, timeout) {
+      // timeout should be longer than css transition
+      var doneTimedDisplay = false,
+        displaying = false;
+
+      target.addEventListener('transitionend', function () {
+        if (!target.classList.contains('show')) {
+          target.style.display = 'none';
+        }
+        doneTimedDisplay = true;
+      });
+      if (!target.style.display || target.style.display === 'none') {
+        displaying = true;
+        target.style.display = displayType;
+      } else {
+        displaying = false;
+      }
+
+      setTimeout(function () {
+        target.classList.toggle(animationClass);
+        doneTimedDisplay = false;
+      }, 10);
+
+      if (!displaying) {
+        setTimeout(function () {
+          // failsafe for transitioned not firing
+          if (!doneTimedDisplay) {
+            target.style.display = 'none';
+          }
+          doneTimedDisplay = true;
+        }, timeout);
+      }
+    };
+
+    setTimeout(() => {
+      animateDisplay(document.querySelector('.content'), 'show', 'flex', 600)
+    }, 500);
+
+    const maxPixelRatioMobile = 2.0;
+    const maxPixelRatioDesktop = 1.5;
+
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    var maxDevicePixelRatio = isMobile ? maxPixelRatioMobile : maxPixelRatioDesktop;
+    var pixelRatio = Math.min(window.devicePixelRatio, maxDevicePixelRatio);
+
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/spawn-webgl.loader.js";
+    var config = {
+      dataUrl: buildUrl + "/spawn-webgl.data.gz",
+      frameworkUrl: buildUrl + "/spawn-webgl.framework.js.gz",
+      codeUrl: buildUrl + "/spawn-webgl.wasm.gz",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "Waremoto",
+      productName: "Spawn",
+      productVersion: "0.1.1",
+      devicePixelRatio: pixelRatio
+    };
+
+    var canvas = document.querySelector("#unity-canvas");
+    //var loadingBar = document.querySelector("#unity-loading-bar");
+    var script = document.createElement("script");
+    var doneTimedDisplay = false;
+    script.src = loaderUrl;
+    script.onload = function () {
+      animateDisplay(document.querySelector('.content'), 'show', 'flex', 6000);
+      createUnityInstance(canvas, config,  (progress) => {
+        // do something with progress
+      }).then(function (unityInstance) {
+          document.querySelector('.content').style.display = 'none';
+      }).catch(function (message) {
+          console.error(message);
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
+
+</html>
