@@ -172,6 +172,9 @@
   <script src="Build/spawn2.loader.js"></script>
   <script>
 
+    delay = function (time) {
+      return new Promise(resolve => setTimeout(resolve, time));
+    }
 
     animateDisplay = function (target, animationClass, displayType, timeout) {
       new Promise(resolve => {
@@ -238,7 +241,7 @@
       createUnityInstance(canvas, config,  (progress) => {
         // do something with progress
       }).then(function (unityInstance) {
-          document.querySelector('.content').style.display = 'none';
+          delay(1000).then(() => document.querySelector('.content').style.display = 'none');
       }).catch(function (message) {
           console.error(message);
       });
