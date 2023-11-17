@@ -1,22 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<script>
-  var f = () => { };
-  var c = {};
-  Object.keys(console).forEach(x => {
-    if (typeof (console[x]) === 'function') {
-      c[x] = f;
-    }
-  });
-  var orgConsole = console;
-  window.orgConsole = orgConsole;
-  var console = c;
-  window.console = console;
-</script>
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spawn</title>
   <style>
     * {
@@ -24,25 +11,70 @@
       margin: 0;
     }
 
-    body {
-      height: 100%;
-      width: 100%;
-      text-align: center;
-      background: black;
+    html {
+      /* fix mobile viewport menu bar on iOS */
+      height: -webkit-fill-available;
     }
 
-    #unity-canvas {
+    body {
+      height: 100%;
+      /* fix mobile viewport menu bar on iOS */
+      height: -webkit-fill-available;
+      width: 100%;
+      text-align: center;
+    }
+
+    #unity-container {
       position: absolute;
       left: 0px;
       top: 0px;
       width: 100%;
       height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #000000;
+    }
+
+    /* Default values, might be overwritten by aspect ratio media queries */
+    #unity-canvas {
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+    }
+
+
+
+    #unity-loading-container {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 40px;
+
+      opacity: 1;
+      visibility: visible;
+      transition: 800ms linear;
+    }
+
+    #unity-loading-container.finished {
+      opacity: 0;
+      visibility: collapse;
+    }
+
+    #unity-loading-container .logo {
+      width: 15%;
+      height: 15%;
     }
 
     #unity-loading-bar {
-      position: absolute;
-      left: 30%;
-      top: 50%;
+      position: relative;
       width: 40%;
       height: 10px;
       background-color: #fff;
@@ -50,7 +82,7 @@
       border-radius: 10px;
     }
 
-    #unity-progress-bar {
+    #unity-loading-bar-inner {
       position: absolute;
       left: 0%;
       top: 0%;
@@ -60,6 +92,7 @@
       border-radius: 10px;
       transition: 400ms linear;
     }
+
 
     .box {
       width: 700px;
@@ -159,95 +192,65 @@
 </head>
 
 <body>
-  <canvas id="unity-canvas"></canvas>
-  <div class="content">
-    <div id="loading-cover">
-      <div class="box">
-        <div class="box1"></div>
-        <div class="box2"></div>
-        <div class="box3"></div>
+  <div id="unity-container">
+    <canvas id="unity-canvas"></canvas>
+  </div>
+  <div id="unity-loading-container">
+    <div class="content">
+      <div id="loading-cover">
+        <div class="box">
+          <div class="box1"></div>
+          <div class="box2"></div>
+          <div class="box3"></div>
+        </div>
       </div>
     </div>
+    <!--img src="logo.svg" class="logo" alt="Logo Waremoto"-->
+    <div id="unity-loading-bar">
+      <div id="unity-loading-bar-inner"></div>
+    </div>
   </div>
-  <script src="Build/spawn2.loader.js"></script>
+  <script src="Build/spawn5.loader.js"></script>
   <script>
-
-    delay = function (time) {
-      return new Promise(resolve => setTimeout(resolve, time));
-    }
-
-    animateDisplay = function (target, animationClass, displayType, timeout) {
-      new Promise(resolve => {
-        // timeout should be longer than css transition
-        var doneTimedDisplay = false,
-          displaying = false;
-
-        target.addEventListener('transitionend', function () {
-          if (!target.classList.contains('show')) {
-            target.style.display = 'none';
-          }
-          doneTimedDisplay = true;
-        });
-        if (!target.style.display || target.style.display === 'none') {
-          displaying = true;
-          target.style.display = displayType;
-        } else {
-          displaying = false;
-        }
-
-        target.classList.toggle(animationClass);
-        doneTimedDisplay = false;
-
-        if (!displaying) {
-          // failsafe for transitioned not firing
-          if (!doneTimedDisplay) {
-            target.style.display = 'none';
-          }
-          doneTimedDisplay = true;
-        }
-        resolve()
-      })
-
-    };
-
-
-    const maxPixelRatioMobile = 2.0;
-    const maxPixelRatioDesktop = 1.5;
-
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    var maxDevicePixelRatio = isMobile ? maxPixelRatioMobile : maxPixelRatioDesktop;
-    var pixelRatio = Math.min(window.devicePixelRatio, maxDevicePixelRatio);
-
     var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/spawn2.loader.js";
+    var loaderUrl = buildUrl + "/spawn5.loader.js";
     var config = {
-      dataUrl: buildUrl + "/spawn2.data.unityweb",
-      frameworkUrl: buildUrl + "/spawn2.framework.js.unityweb",
-      codeUrl: buildUrl + "/spawn2.wasm.unityweb",
+      dataUrl: buildUrl + "/spawn5.data.unityweb",
+      frameworkUrl: buildUrl + "/spawn5.framework.js.unityweb",
+      codeUrl: buildUrl + "/spawn5.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "Waremoto",
       productName: "Spawn",
       productVersion: "0.1.1",
-      devicePixelRatio: pixelRatio
     };
-    animateDisplay(document.querySelector('.content'), 'show', 'flex', 6000);
+
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if(isMobile) {
+      // Define a maximum pixel ratio for mobile to avoid rendering at too high resolutions
+      const maxPixelRatioMobile = 2.0;
+      config.devicePixelRatio = Math.min(window.devicePixelRatio, maxPixelRatioMobile);
+    }
 
     var canvas = document.querySelector("#unity-canvas");
-    //var loadingBar = document.querySelector("#unity-loading-bar");
+    var loadingContainer = document.querySelector("#unity-loading-container");
+    var loadingBar = document.querySelector("#unity-loading-bar-inner");
+
+    var unityGame;
     var script = document.createElement("script");
-    var doneTimedDisplay = false;
     script.src = loaderUrl;
-    script.onload = function () {
-      createUnityInstance(canvas, config,  (progress) => {
-        // do something with progress
-      }).then(function (unityInstance) {
-          delay(1000).then(() => document.querySelector('.content').style.display = 'none');
-      }).catch(function (message) {
-          console.error(message);
+    script.onload = function() {
+      createUnityInstance(canvas, config, function(progress) {
+        loadingBar.style.width = 100 * progress + "%";
+      }).then(function(unityInstance) {
+        unityGame = unityInstance;
+        loadingContainer.classList.add("finished");
+      }).catch(function(message) {
+        alert(message);
       });
     };
     document.body.appendChild(script);
   </script>
+  <!-- Parse Unity rich text to render stylized browser console logs -->
+  <script src="./pretty-console.js"></script>
 </body>
-
 </html>
