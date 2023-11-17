@@ -40,18 +40,18 @@
     #unity-canvas {
       width: 100%;
       height: 100%;
-      background-color: #fff;
+      background-color: #000000;
     }
 
 
 
-    #unity-loading-container {
+#unity-loading-container {
       position: absolute;
       left: 0px;
       top: 0px;
       width: 100%;
       height: 100%;
-      background-color: #fff;
+      background-color: #000000;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -75,11 +75,12 @@
 
     #unity-loading-bar {
       position: relative;
-      width: 40%;
-      height: 10px;
-      background-color: #fff;
-      border: 1px solid #ccc;
+      width: 30%;
+      height: 7px;
+      background-color: black;
+      border: 1px solid #1E1E1E;
       border-radius: 10px;
+      margin-top: 50%;
     }
 
     #unity-loading-bar-inner {
@@ -88,7 +89,7 @@
       top: 0%;
       width: 1%;
       height: 100%;
-      background-color: #ccc;
+      background-color: #FAFAFA;
       border-radius: 10px;
       transition: 400ms linear;
     }
@@ -109,61 +110,56 @@
     @keyframes anime {
       0% {
         transform: translateX(0px) translateY(0px) rotate(0deg);
-        border-radius: 30px;
       }
 
       20% {
         transform: translateX(100px) translateY(200px) rotate(360deg);
-        border-radius: 50%;
       }
 
       40% {
         transform: translateX(250px) translateY(0px) rotate(720deg);
-        border-radius: 30px
       }
 
       60% {
         transform: translateX(400px) translateY(200px) rotate(1080deg);
-        border-radius: 50%;
       }
 
       80% {
         transform: translateX(550px) translateY(0px) rotate(1440deg);
-        border-radius: 30px
       }
     }
 
     .box1 {
-      width: 100px;
+      width: 70px;
       height: 100px;
-      border-radius: 30px;
-      background-color: springgreen;
+      border-radius: 7px;
+      background-color: #E45D1E;
       animation-delay: 0.1s;
-      box-shadow: 0 0 30px 10px springgreen,
-        0 0 60px 20px springgreen,
-        inset 0 50px 80px yellow;
+      box-shadow: 0 0 30px 10px #E45D1E,
+        0 0 60px 20px #E45D1E,
+        inset 0 50px 80px black;
     }
 
     .box2 {
-      width: 100px;
+      width: 70px;
       height: 100px;
-      border-radius: 30px;
-      background-color: deepskyblue;
+      border-radius: 7px;
+      background-color: #009FB7;
       animation-delay: 0.5s;
-      box-shadow: 0 0 30px 10px deepskyblue,
-        0 0 60px 20px deepskyblue,
-        inset 0 50px 80px white;
+      box-shadow: 0 0 30px 10px #009FB7,
+        0 0 60px 20px #009FB7,
+        inset 0 50px 80px black;
     }
 
     .box3 {
-      width: 100px;
+      width: 70px;
       height: 100px;
-      border-radius: 30px;
-      background-color: deeppink;
+      border-radius: 7px;
+      background-color: #FAFAFA;
       animation-delay: 1s;
-      box-shadow: 0 0 30px 10px deeppink,
-        0 0 60px 20px deeppink,
-        inset 0 50px 80px orange;
+      box-shadow: 0 0 30px 10px #FAFAFA,
+        0 0 60px 20px #FAFAFA,
+        inset 0 50px 80px black;
     }
 
     .content {
@@ -196,7 +192,6 @@
     <canvas id="unity-canvas"></canvas>
   </div>
   <div id="unity-loading-container">
-    <div class="content">
       <div id="loading-cover">
         <div class="box">
           <div class="box1"></div>
@@ -204,20 +199,19 @@
           <div class="box3"></div>
         </div>
       </div>
-    </div>
     <!--img src="logo.svg" class="logo" alt="Logo Waremoto"-->
     <div id="unity-loading-bar">
       <div id="unity-loading-bar-inner"></div>
     </div>
   </div>
-  <script src="Build/spawn5.loader.js"></script>
+  <script src="Build/spawn001.loader.js"></script>
   <script>
     var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/spawn5.loader.js";
+    var loaderUrl = buildUrl + "/spawn001.loader.js";
     var config = {
-      dataUrl: buildUrl + "/spawn5.data.unityweb",
-      frameworkUrl: buildUrl + "/spawn5.framework.js.unityweb",
-      codeUrl: buildUrl + "/spawn5.wasm.unityweb",
+      dataUrl: buildUrl + "/spawn001.data.unityweb",
+      frameworkUrl: buildUrl + "/spawn001.framework.js.unityweb",
+      codeUrl: buildUrl + "/spawn001.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "Waremoto",
       productName: "Spawn",
