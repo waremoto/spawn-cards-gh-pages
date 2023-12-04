@@ -45,7 +45,7 @@
 
 
 
-#unity-loading-container {
+    #unity-loading-container {
       position: absolute;
       left: 0px;
       top: 0px;
@@ -184,6 +184,7 @@
       display: flex;
       transition: all .5s ease-in-out;
     }
+
   </style>
 </head>
 
@@ -204,14 +205,14 @@
       <div id="unity-loading-bar-inner"></div>
     </div>
   </div>
-  <script src="Build/spawn002.loader.js"></script>
+  <script src="Build/spawn001.loader.js"></script>
   <script>
     var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/spawn002.loader.js";
+    var loaderUrl = buildUrl + "/spawn001.loader.js";
     var config = {
-      dataUrl: buildUrl + "/spawn002.data.unityweb",
-      frameworkUrl: buildUrl + "/spawn002.framework.js.unityweb",
-      codeUrl: buildUrl + "/spawn002.wasm.unityweb",
+      dataUrl: buildUrl + "/spawn001.data.unityweb",
+      frameworkUrl: buildUrl + "/spawn001.framework.js.unityweb",
+      codeUrl: buildUrl + "/spawn001.wasm.unityweb",
       streamingAssetsUrl: "StreamingAssets",
       companyName: "Waremoto",
       productName: "Spawn",
